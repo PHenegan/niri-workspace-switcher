@@ -5,4 +5,4 @@ rustPlatform.buildRustPackage {
   buildInputs = [ glib ];
   nativeBuildInputs = [ pkg-config ];
   cargoLock.lockFile = ./Cargo.lock;
-};
+}
