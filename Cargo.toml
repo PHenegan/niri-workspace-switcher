@@ -1,0 +1,8 @@
+[package]
+name = "niri-workspace-switcher"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+niri-ipc = { version = "25.11" }
+clap = { version = "4.5.54", features = ["derive"] }
