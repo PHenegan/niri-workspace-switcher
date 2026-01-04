@@ -36,7 +36,7 @@ impl NiriState {
             .iter()
             .find(|workspace| workspace.is_focused)
             .unwrap(); // TODO: Make an Error Enum
-        let target = self.find_target_workspace(&workspace)?.clone();
+        let target = self.find_target_workspace(&workspace, &current)?.clone();
 
         let outputs_match = current.output.eq(&target.output);
 
@@ -73,7 +73,11 @@ impl NiriState {
         Ok(())
     }
 
-    fn find_target_workspace(&self, target: &String) -> Result<&Workspace, Error> {
+    fn find_target_workspace(
+        &self,
+        target: &String,
+        current: &Workspace,
+    ) -> Result<&Workspace, Error> {
         let named_workspace = self.workspaces.iter().find(|workspace| {
             workspace
                 .name
@@ -89,10 +93,12 @@ impl NiriState {
                     .workspaces
                     .iter()
                     .find(|workspace| workspace.id == id)
-                    // If the workspace at the given index does not exist, just use the highest one
+                    // If the workspace at the given index does not exist,
+                    // just use the highest one on the current monitor
                     .unwrap_or_else(|| {
                         self.workspaces
                             .iter()
+                            .filter(|workspace| workspace.output.eq(&current.output))
                             .max_by(|a, b| a.idx.cmp(&b.idx))
                             .unwrap()
                     }))
