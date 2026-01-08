@@ -27,7 +27,6 @@ impl NiriState {
     /// Sort workspaces by Id across each monitor
     pub fn sort_workspaces(&mut self) -> Result<(), Error> {
         let mut outputs_by_monitor = self.group_by_output();
-        println!("Found {} outputs", outputs_by_monitor.len());
         for (output, ws_ids) in outputs_by_monitor.iter_mut() {
             match output {
                 Some(_output) => self.apply_output_order(ws_ids)?,
@@ -42,10 +41,6 @@ impl NiriState {
             HashMap::new();
 
         for workspace in &self.workspaces {
-            println!(
-                "Adding workspace {:#?} (id {})",
-                &workspace.name, workspace.id
-            );
             match outputs_by_monitor.get_mut(&workspace.output) {
                 Some(heap) => heap.push(Reverse(SortState {
                     idx: workspace.idx,
@@ -74,15 +69,12 @@ impl NiriState {
         // meaning the list fully reflect the sorted state
         // by the time the priority queue has been exhausted
         let mut count = 0;
-        println!("Sorting {} workspaces", workspaces.len());
         while let Some(Reverse(workspace)) = workspaces.pop() {
-            println!("Processing workspace {:#?}", workspace);
             count += 1; // Niri workspaces are 1-indexed
             if workspace.idx == count {
                 continue;
             }
 
-            println!("Switching workspace {} to index {}", workspace.id, count);
             let request = Request::Action(Action::MoveWorkspaceToIndex {
                 index: count as usize,
                 reference: Some(WorkspaceReferenceArg::Id(workspace.id)),
