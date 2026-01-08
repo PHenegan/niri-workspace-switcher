@@ -1,24 +1,9 @@
 use crate::error::SwitchWorkspaceError;
 use crate::{Error, NiriState};
 
-use niri_ipc::{Action, Request, Response, Workspace, WorkspaceReferenceArg, socket::Socket};
+use niri_ipc::{Action, Request, Workspace, WorkspaceReferenceArg};
 
 impl NiriState {
-    pub fn new() -> Result<Self, Error> {
-        let mut socket = Socket::connect()?;
-        let workspaces = NiriState::get_workspaces(&mut socket)?;
-
-        Ok(NiriState { socket, workspaces })
-    }
-
-    fn get_workspaces(niri_socket: &mut Socket) -> Result<Vec<Workspace>, Error> {
-        let reply = niri_socket.send(Request::Workspaces)??;
-        match reply {
-            Response::Workspaces(workspaces) => Ok(workspaces),
-            _ => unreachable!("Should exclusively respond with workspaces response"),
-        }
-    }
-
     pub fn switch_to_workspace(&mut self, workspace: String) -> Result<(), Error> {
         // workspace which the user currently has focused
         let current = self
