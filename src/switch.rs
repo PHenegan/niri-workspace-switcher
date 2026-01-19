@@ -11,10 +11,10 @@ impl NiriState {
             .iter()
             .find(|workspace| workspace.is_focused)
             .ok_or(SwitchWorkspaceError::NoFocusedOutput)?;
+        // TODO: This clone is a skill issue
         let target = self.find_target_workspace(&workspace, &current)?.clone();
 
         let outputs_match = current.output.eq(&target.output);
-
         if !outputs_match && !target.is_active {
             // If the target is on a different monitor but isn't being displayed, just move it over
             self.socket
@@ -45,6 +45,9 @@ impl NiriState {
             reference: WorkspaceReferenceArg::Id(target.id),
         }))??;
 
+        // TODO: I kind of took the easy way out with the reload but there's probably a way to do
+        // this without another socket call
+        self.reload_workspaces()?;
         Ok(())
     }
 

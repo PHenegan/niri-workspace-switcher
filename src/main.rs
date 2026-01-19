@@ -33,6 +33,11 @@ impl NiriState {
             _ => unreachable!("Should exclusively respond with workspaces response"),
         }
     }
+
+    fn reload_workspaces(&mut self) -> Result<(), Error> {
+        self.workspaces = NiriState::get_workspaces(&mut self.socket)?;
+        Ok(())
+    }
 }
 
 fn main() -> Result<(), Error> {
