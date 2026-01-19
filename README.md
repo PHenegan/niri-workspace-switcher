@@ -14,11 +14,12 @@ and it was bothering me seeing them out of order in waybar.
 
 ## Usage
 `niri-workspace-switcher [workspace-name]` will focus the intended workspace using the behavior described above.
+
 `niri-workspace-switcher [index]` will focus the specified index on the current monitor, or the highest index if that one does not exist
 
 ## Building
 You can build this tool using `cargo build --release` to get a resulting binary. There is nothing architecture specific about this project, so it should work on any linux platform which Niri supports.
-You will have to move the resulting binary (`./target/release/niri-workspace-switcher`) into a location present on your `$PATH` variable to use this application with Niri.
+You will also have to move the resulting binary (`./target/release/niri-workspace-switcher`) into a location present on your `$PATH` variable to use this application with Niri.
 
 If you have Nix installed, you can also do `nix build`, which will create a symlinked binary called `result` in this project's root directory.
 For now this mode of building is only supported on `x86_64` because all of the flake guides I could find only specified `x86_64`. The project should support ARM systems though so I will try to add this in the future.
